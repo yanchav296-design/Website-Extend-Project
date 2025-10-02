@@ -27,23 +27,3 @@ def profile():
         )
 
     return render_template('carsonForm.html')
-
-
-@app.route('/feedback', methods=['GET', 'POST'])
-def feedback():
-    if request.method == 'POST':
-        rating = request.form.get('rating', '').strip()
-        feedback = request.form.get('feedback', '').strip()
-
-        # Validation
-        if not rating:
-            errorMsg = "Please provide a rating"
-            return render_template('feedbackForm.html', error=errorMsg)
-
-        return render_template(
-            'feedbackSuccess.html',
-            rating=rating,
-            comments=feedback
-        )
-
-    return render_template('feedbackForm.html')

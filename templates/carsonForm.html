@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block title%}{{super()}} - Profile{% endblock %} {%
+block content%}
+
+<h2>User Profile</h2>
+{% if error %}
+<p class="error">{{error}}</p>
+{% endif %}
+
+<form action="" method="post">
+  <div>
+    <label for="name">Name *:</label>
+    <input type="text" name="name" id="name" required />
+  </div>
+  <div>
+    <label for="age">Age *:</label>
+    <input type="number" name="age" id="age" min="0" required />
+  </div>
+    <div>
+      <label for="favorite_game">Favorite Game:</label>
+      <input type="text" name="favorite_game" id="favorite_game" />
+  </div>
+  <button type="submit">Save Profile</button>
+</form>
+{% endblock %}
