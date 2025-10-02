@@ -32,7 +32,7 @@ def profile():
 @app.route('/addComments', methods=['GET', 'POST'])
 def addComments():
     if request.method == 'POST':
-        comment = request.form.get('comment', '').strip()
+        comment = request.form.get('comments', '').strip()
         if not comment:
             error = "Please enter a comment"
             return render_template('chaoForm.html', error=error)
