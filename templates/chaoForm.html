@@ -1,17 +1,13 @@
-{% extends "base.html" %}
-
+{% extends 'base.html' %}
 {% block content %}
-<h2>Event Feedback</h2>
-
-<form method="">
+    <h2>Profile Saved Successfully</h2>
+    <p>Thank you, {{ name }}. Your profile has been saved.</p>
     <div>
-        <label for ="rating">Rate the event (1-5) :</label>
-        <input type="number" id="rating" name="rating" min="1" max="5" required>
+        <h3>Your Profile Information:</h3>
+        <p><strong>Name:</strong> {{ name }}</p>
+        <p><strong>Age:</strong> {{ age }}</p>
+        <p><strong>Favorite Game:</strong> {{ game }}</p>
+        
     </div>
-    <div>
-        <label for="feedback">Your feedback:</label>
-        <textarea id="feedback" name="feedback" rows="4" placeholder="Tell us what you thought"></textarea>
-    </div>
-    <button type="submit">Submit Feedback</button>
-</form>
+    <a href="{{ url_for('profile') }}">Create Another Profile</a>
 {% endblock %}
