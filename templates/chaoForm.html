@@ -10,5 +10,13 @@
         
     </div>
     <a href="{{ url_for('profile') }}">Create Another Profile</a>
-    <a href="{{ url_for('comments') }}">Create Another Profile</a>
+    <a href="{{ url_for('addComments') }}">Create Another Profile</a>
+    <form method="post">
+
+   
+    <div>
+        <label for="comments">Care to comment on why this is the best game</label>
+        <textarea id="comments" name="comments" rows="4"></textarea>
+    </div> 
+</form>
 {% endblock %}
