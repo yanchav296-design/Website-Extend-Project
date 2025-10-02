@@ -27,3 +27,10 @@ def profile():
         )
 
     return render_template('carsonForm.html')
+
+
+@app.route('/addComments', methods=['GET', 'POST'])
+def addComments():
+    return render_template('ericForm.html')
+
+
