@@ -6,20 +6,11 @@ block content%}
 <p class="error">{{error}}</p>
 {% endif %}
 
-<form action="" method="post">
-  <div>
-    <label for="name">Name *:</label>
-    <input type="text" name="name" id="name" required />
-  </div>
-  <div>
-    <label for="age">Age *:</label>
-    <input type="number" name="age" id="age" min="0" required />
-  </div>
+<h2>Profile Saved Successfully</h2>
+    <p>Thank you, {{ name }}. Your profile has been saved.</p>
     <div>
-      <label for="favorite_game">Favorite Game:</label>
-      <input type="text" name="favorite_game" id="favorite_game" />
-  </div>
-  <button type="submit">Save Profile</button>
-</form>
+        <h3>Your Profile Information:</h3>
+        <p><strong>Comments:</strong> {{ comment }}</p>
+    </div>
 <h1>TESTING ERIC FORM</h1>
 {% endblock %}

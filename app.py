@@ -31,6 +31,12 @@ def profile():
 
 @app.route('/addComments', methods=['GET', 'POST'])
 def addComments():
-    return render_template('ericForm.html')
+    if request.method == 'POST':
+        comment = request.form.get('comment', '').strip()
+        if not comment:
+            error = "Please enter a comment"
+            return render_template('chaoForm.html', error=error)
+
+    return render_template('ericForm.html', comment=comment)
 
 
