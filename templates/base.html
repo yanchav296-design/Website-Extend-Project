@@ -7,20 +7,20 @@
     <title>{% block title %}My Website{% endblock %}</title>
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Website</h1>
-    </header>
-    <main>
-        {% block content %}
+<nav>
+    <a href="{{ url_for('profile') }}">Home</a> |
+</nav>
+<header>
+    <h1>Welcome to My Website</h1>
+</header>
+<main>
+    {% block content %}
         <p>This is the default content.</p>
-        {% endblock %}
-    </main>
-    <footer>
-        <p>&copy; 2023 My Website</p>
-    </footer>
-     <nav>
-      <a href="{{ url_for('profile') }}">Home</a> |
-      <a href="{{ url_for('addComments') }}">Feedback Form</a>
-    </nav>
+    {% endblock %}
+</main>
+<footer>
+    <p>&copy; 2023 My Website</p>
+</footer>
+
 </body>
 </html>
