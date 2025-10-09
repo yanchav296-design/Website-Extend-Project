@@ -1,13 +1,10 @@
 {% extends "base.html" %}
-
+ 
 {% block css_link %}
 <link rel="stylesheet" href="{{ url_for('static', filename='chaostyles.css') }}">
 {% endblock %}
-
+ 
 {% block title %}Selected Game{% endblock %}
-
-<!-- rest of your template -->
-
 
 {% set game_data = {
     "Valorant": {
@@ -29,7 +26,7 @@
         "sidebar_right": {"url": "https://www.pinnacle.com/Cms_Data/Contents/Guest/Media/esports2017/Article-Images/CSGO/2019/Evergreen/2019-CSGO-Map-Pool/article-cs-go-map-pool-hero.jpg", "desc": "CS:GO has multiple map pools; its primary competitive (Active Duty) pool featured 7 maps in the final years, with a larger reserve pool and many other official and community-made maps available for casual or other game modes."}
     }
 } %}
-
+ 
 {% block sidebar_left %}
 <h3>Players Info</h3>
 {% if game in game_data %}
@@ -39,7 +36,7 @@
   <p>No map available.</p>
 {% endif %}
 {% endblock %}
-
+ 
 {% block sidebar_right %}
 <h3>Maps Info</h3>
 {% if game in game_data %}
@@ -49,24 +46,24 @@
   <p>No map available.</p>
 {% endif %}
 {% endblock %}
-
+ 
 {% block content %}
-    <h2>Profile Saved Successfully</h2>
-    <p>Thank you, {{ name }}. Your profile has been saved.</p>
-    <div>
-        <h3>Your Profile Information:</h3>
-        <p><strong>Name:</strong> {{ name }}</p>
-        <p><strong>Age:</strong> {{ age }}</p>
-        <p><strong>Favorite Game:</strong> {{ game }}</p>
-        
-    </div>
-    <a href="{{ url_for('profile') }}">Create Another Profile</a>
-    <a href="{{ url_for('addComments') }}">Create Another Profile</a>
-    <form method="post">
-    <div>
-        <label for="comments">Care to comment on why this is the best game</label>
-        <textarea id="comments" name="comments" rows="4"></textarea>
-    </div> 
-    <button type="submit">Submit Comment</button>
-</form>
+{% if game in game_data %}
+  <!-- Big central image -->
+  <div style="text-align:center; margin-bottom:20px;">
+    <img src="{{ game_data[game].big_image }}" alt="{{ game }} Big Image" style="max-width:90%; border-radius:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+  </div>
+ 
+  <!-- Game description -->
+  <h2>{{ game }}</h2>
+  <p>{{ game_data[game].description }}</p>
+ 
+{% else %}
+  <p>No game selected.</p>
+{% endif %}
+ 
+<br>
+<a href="{{ url_for('pick_game') }}">Pick Again</a>
 {% endblock %}
+ 
+ 

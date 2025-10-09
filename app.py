@@ -23,7 +23,7 @@ with app.app_context():
 
 # Temporary storage for chosen game
 chosen_game = {}
-
+ 
 # Temporary storage for comments by game
 previous_comments = {"Valorant": [], "Rainbow Six Siege": [], "CS:GO": []}
 
@@ -67,17 +67,17 @@ def addComments():
     current_game = chosen_game.get("game")
     if not current_game:
         return redirect(url_for('pick_game'))
-
+ 
     error = None
     name = ""
     comment = ""
     rating = 0
-
+ 
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
         comment = request.form.get('comments', '').strip()
         rating = int(request.form.get('rating', 0))
-
+ 
         if not comment:
             error = "Please enter a comment"
 

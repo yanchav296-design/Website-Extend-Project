@@ -24,20 +24,21 @@
 
 {% block sidebar_right %}
 <h3>Previous Comments for {{ current_game }}</h3>
-{% if previous_comments %}
+{% if database %}
     <ul class="previous-comments">
-    {% for c in previous_comments %}
-        <li>
-            <strong>{{ c.name or "Anonymous" }}</strong> - 
-            {% for i in range(c.rating) %}★{% endfor %}
-            {% for i in range(5 - c.rating) %}☆{% endfor %}
-            <p>{{ c.comment }}</p>
-        </li>
-    {% endfor %}
+        {% for c in database %}
+            <li>
+                <strong>{{ c.name or "Anonymous" }}</strong> -
+                {% for i in range(c.rating) %}★{% endfor %}
+                {% for i in range(5 - c.rating) %}☆{% endfor %}
+                <p>{{ c.comment }}</p>
+            </li>
+        {% endfor %}
     </ul>
 {% else %}
     <p>No comments yet.</p>
 {% endif %}
+
 {% endblock %}
 
 {% block content %}
