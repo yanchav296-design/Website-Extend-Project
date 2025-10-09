@@ -1,74 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return redirect(url_for('profile'))
-
-
-
-@app.route('/profile', methods=['GET', 'POST'])
-def profile():
-    if request.method == 'POST':
-        name = request.form.get('name', '').strip()
-        age = request.form.get('age', '').strip()
-        game = request.form.get('favorite_game', '').strip()
-  
-        # Validation
-        if not name or not age or not game:
-            error = "Please fill in all required fields"
-            return render_template('carsonForm.html', error=error)
-
-        return render_template(
-            'chaoForm.html',
-            name=name,
-            age=age,
-            game=game,
-        )
-
-    return render_template('carsonForm.html')
-
-
-@app.route('/addComments', methods=['GET', 'POST'])
-def addComments():
-    if request.method == 'POST':
-        comment = request.form.get('comment', '').strip()
-        if not comment:
-            error = "Please enter a comment"
-            return render_template('chaoForm.html', error=error)
-
-    return render_template('ericForm.html', comment=comment)
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///newgame.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-class AddComments(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    current_game = db.Column(db.Text, nullable=False)
-    error = db.Column(db.Text, nullable=True)
-    name = db.Column(db.Text, nullable=False)
-    comment = db.Column(db.Text, nullable=False)
-    rating = db.Column(db.Integer, nullable=False)
-
-  #  created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
 
 # Temporary storage for chosen game
 chosen_game = {}
 
 # Temporary storage for comments by game
-previous_comments = {"Valorant": [], "Rainbow Six Siege": [], "CS:GO": []}
-
+previous_comments = {
+    "Valorant": [],
+    "Rainbow Six Siege": [],
+    "CS:GO": []
+}
 
 @app.route('/')
 def index():
     return redirect(url_for('pick_game'))
-
 
 # ----------------------
 # PICK GAME PAGE
@@ -85,7 +31,6 @@ def pick_game():
         return redirect(url_for('chaoForm'))
     return render_template('carsonForm.html', error=error)
 
-
 # ----------------------
 # SHOW SELECTED GAME
 # ----------------------
@@ -94,11 +39,14 @@ def chaoForm():
     current_game = chosen_game.get("game")
     if not current_game:
         return redirect(url_for('pick_game'))
-    return render_template('chaoForm.html', game=current_game)
-
+    return render_template(
+        'chaoForm.html',
+        game=current_game
+    )
 
 # ----------------------
 # COMMENTS PAGE (ericForm)
+# ----------------------
 @app.route('/addComments', methods=['GET', 'POST'])
 def addComments():
     current_game = chosen_game.get("game")
@@ -117,22 +65,17 @@ def addComments():
 
         if not comment:
             error = "Please enter a comment"
-        try:
-            new_profile = AddComments(current_game=current_game,
-                                  error=error, name=name, comment=comment, rating=rating)
-            db.session.add(new_profile)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            error = "An error occurred while saving your profile. Please try again."
-            return render_template('ericForm.html', error=error)
+        else:
+            previous_comments[current_game].append({
+                "name": name or "Anonymous",
+                "comment": comment,
+                "rating": rating
+            })
+            # Reset form after submission
+            name = ""
+            comment = ""
+            rating = 0
 
-        return render_template('ericForm.html', current_game=current_game, error=error, name=name, comment=comment, rating=rating)
+    return render_template('ericForm.html', comment=comment)
 
-    return render_template('ericForm.html', game=current_game, error=error, name=name, comment=comment, rating=rating)
-
-# ----------------------
-if __name__ == '__main__':
-    app.run(debug=True)
- 
 
