@@ -1,15 +1,69 @@
-{% extends "base.html" %} {% block title%}{{super()}} - Profile{% endblock %} {%
-block content%}
+{% extends "base.html" %}
 
-<h2>User Profile</h2>
+{% block css_link %}
+<link rel="stylesheet" href="{{ url_for('static', filename='ericstyles.css') }}">
+{% endblock %}
+
+{% block title %}Add Comments{% endblock %}
+
+{% block sidebar_left %}
+<h3>{{ current_game }} Info</h3>
+<div class="game-sidebar">
+    {% if current_game == "Valorant" %}
+        <img src="https://www.talkesport.com/wp-content/uploads/valorant-stuck-on-loading-screen.webp" alt="Valorant Map">
+        <p>Tactical FPS with agents and spike planting.</p>
+    {% elif current_game == "Rainbow Six Siege" %}
+        <img src="https://i.redd.it/s5df0ihs55981.jpg" alt="Rainbow Six Siege Map">
+        <p>Team-based tactical shooter focused on objectives.</p>
+    {% elif current_game == "CS:GO" %}
+        <img src="https://media.steampowered.com/apps/csgo/blog/images/fb_image.png?v=6" alt="CS:GO Map">
+        <p>Competitive FPS, bomb defusal and hostage rescue.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block sidebar_right %}
+<h3>Previous Comments for {{ current_game }}</h3>
+{% if previous_comments %}
+    <ul class="previous-comments">
+    {% for c in previous_comments %}
+        <li>
+            <strong>{{ c.name or "Anonymous" }}</strong> - 
+            {% for i in range(c.rating) %}★{% endfor %}
+            {% for i in range(5 - c.rating) %}☆{% endfor %}
+            <p>{{ c.comment }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No comments yet.</p>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<h2>Leave a Comment & Rating for {{ current_game }}</h2>
+
 {% if error %}
-<p class="error">{{error}}</p>
+<p class="error">{{ error }}</p>
 {% endif %}
 
-<h2>Profile Saved Successfully</h2>
-    <p>Thank you, {{ name }}. Your profile has been saved.</p>
-    <div>
-        <h3>Your Profile Information:</h3>
-        <p><strong>Comments:</strong> {{ comment }}</p>
-    </div>
+<form action="" method="post">
+  <label for="name">Name (optional):</label>
+  <input type="text" name="name" id="name" placeholder="Your name..." value="{{ name }}">
+
+  <label for="rating">Rating:</label>
+  <div class="star-rating">
+    {% for i in range(5,0,-1) %}
+      <input type="radio" id="star{{i}}" name="rating" value="{{i}}" {% if rating == i %}checked{% endif %}>
+      <label for="star{{i}}" title="{{i}} stars">★</label>
+    {% endfor %}
+  </div>
+
+  <label for="comments">Comment:</label>
+  <textarea name="comments" rows="4" cols="40">{{ comment }}</textarea>
+
+  <button type="submit">Submit</button>
+</form>
 {% endblock %}
+
+
