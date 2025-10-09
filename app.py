@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///newgame.db'
@@ -11,6 +12,7 @@ class AddComments(db.Model):
     current_game = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text, nullable=False)
     comment = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
 
 with app.app_context():
     db.create_all()
@@ -57,7 +59,8 @@ def chaoForm():
     current_game = chosen_game.get("game")
     if not current_game:
         return redirect(url_for('pick_game'))
-    return render_template('chaoForm.html', game=current_game)
+    database = AddComments.query.filter_by(current_game=current_game).all()
+    return render_template('chaoForm.html', game=current_game, database=database)
 
 
 # ----------------------
@@ -82,7 +85,7 @@ def addComments():
             error = "Please enter a comment"
 
         try:
-            new_profile = AddComments(current_game=current_game, name=name, comment=comment)
+            new_profile = AddComments(current_game=current_game, name=name, comment=comment,rating=rating)
             db.session.add(new_profile)
             db.session.commit()
         except Exception as e:
@@ -91,8 +94,9 @@ def addComments():
             return render_template('ericForm.html', error=error)
 
         # return render_template('ericForm.html', current_game=current_game, error=error,  #                       previous_comments=previous_comments[current_game], name=name, comment=comment,  #                       rating=rating)
+    database = AddComments.query.filter_by(current_game=current_game).all()
     return render_template('ericForm.html', game=current_game, error=error,
-                           name=name, comment=comment, rating=rating)
+                           name=name, comment=comment, rating=rating,database=database)
 
     # ----------------------
     if __name__ == '__main__':
