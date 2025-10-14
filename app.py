@@ -127,7 +127,8 @@ def append():
             database = AddComments.query.filter_by(current_game=current_game).all()
             add = True
             for entry in database:
-                if entry.name == name and entry.comment == comment and entry.rating == rating:
+                testComment = entry.comment + " - Appended Text"
+                if entry.name == name and entry.comment == testComment and entry.rating == rating:
                     add = False
                     break
             if add:
