@@ -101,3 +101,25 @@ def addComments():
     # ----------------------
     if __name__ == '__main__':
         app.run(debug=True)
+@app.route('/append')
+def append():
+    current_game = chosen_game.get("game")
+    try:
+        profilesToAppend = AddComments.query.filter_by(current_game=current_game).all()
+        for profile in profilesToAppend:
+            if 'Appended Text' not in profile.comment:
+                profile.comment += " - Appended Text"
+        db.session.commit()
+        return render_template('ericForm.html', game=current_game, database=profilesToAppend)
+
+    except Exception as e:
+        db.session.rollback()
+        error = f"An error occurred while appending to comments. Please try again. {str(e)}"
+
+        return render_template('ericForm.html', error=error)
+
+    current_game = chosen_game.get("game")
+    if not current_game:
+        return redirect(url_for('pick_game'))
+    database = AddComments.query.filter_by(current_game=current_game).all()
+    return render_template('ericForm.html', game=current_game, database=database)
