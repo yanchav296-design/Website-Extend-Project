@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///newgame.db'
@@ -14,6 +15,7 @@ class AddComments(db.Model):
     comment = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
 
+
 with app.app_context():
     db.create_all()
 
@@ -25,7 +27,7 @@ with app.app_context():
 
 # Temporary storage for chosen game
 chosen_game = {}
- 
+
 # Temporary storage for comments by game
 previous_comments = {"Valorant": [], "Rainbow Six Siege": [], "CS:GO": []}
 
@@ -70,24 +72,31 @@ def addComments():
     current_game = chosen_game.get("game")
     if not current_game:
         return redirect(url_for('pick_game'))
- 
+
     error = None
     name = ""
     comment = ""
     rating = 0
- 
+
     if request.method == 'POST':
         name = request.form.get('name', '').strip()
         comment = request.form.get('comments', '').strip()
         rating = int(request.form.get('rating', 0))
- 
+
         if not comment:
             error = "Please enter a comment"
 
         try:
-            new_profile = AddComments(current_game=current_game, name=name, comment=comment,rating=rating)
-            db.session.add(new_profile)
-            db.session.commit()
+            database = AddComments.query.filter_by(current_game=current_game).all()
+            add = True
+            for entry in database:
+                if entry.name == name and entry.comment == comment and entry.rating == rating:
+                    add = False
+                    break
+            if add:
+                new_profile = AddComments(current_game=current_game, name=name, comment=comment, rating=rating)
+                db.session.add(new_profile)
+                db.session.commit()
         except Exception as e:
             db.session.rollback()
             error = f"An error occurred while saving your profile. Please try again. {str(e)}"
@@ -95,15 +104,41 @@ def addComments():
 
         # return render_template('ericForm.html', current_game=current_game, error=error,  #                       previous_comments=previous_comments[current_game], name=name, comment=comment,  #                       rating=rating)
     database = AddComments.query.filter_by(current_game=current_game).all()
-    return render_template('ericForm.html', game=current_game, error=error,
-                           name=name, comment=comment, rating=rating,database=database)
+    return render_template('ericForm.html', game=current_game, error=error, name=name, comment=comment, rating=rating,
+                           database=database)
 
     # ----------------------
     if __name__ == '__main__':
         app.run(debug=True)
-@app.route('/append')
+
+
+@app.route('/append' , methods=['GET', 'POST'])
 def append():
     current_game = chosen_game.get("game")
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        comment = request.form.get('comments', '').strip()
+        rating = int(request.form.get('rating', 0))
+
+        if not comment:
+            error = "Please enter a comment"
+
+        try:
+            database = AddComments.query.filter_by(current_game=current_game).all()
+            add = True
+            for entry in database:
+                testComment = entry.comment + " - Appended Text"
+                if entry.name == name and entry.comment == testComment and entry.rating == rating:
+                    add = False
+                    break
+            if add:
+                new_profile = AddComments(current_game=current_game, name=name, comment=comment, rating=rating)
+                db.session.add(new_profile)
+                db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            error = f"An error occurred while saving your profile. Please try again. {str(e)}"
+            return render_template('ericForm.html', error=error)
     try:
         profilesToAppend = AddComments.query.filter_by(current_game=current_game).all()
         for profile in profilesToAppend:
@@ -115,8 +150,7 @@ def append():
     except Exception as e:
         db.session.rollback()
         error = f"An error occurred while appending to comments. Please try again. {str(e)}"
-
-        return render_template('ericForm.html', error=error)
+        return render_template('carsonForm.html', error=error)
 
     current_game = chosen_game.get("game")
     if not current_game:
